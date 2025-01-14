@@ -1,9 +1,24 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from sqlalchemy.exc import SQLAlchemyError
 import src.models as models
 import secrets
 from sqlalchemy.future import select
+import uuid
+import aiofiles
+from pathlib import Path
+
+UPLOAD_DIR = Path('./assets/product_images/')
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+async def save_image(file: UploadFile) -> str:
+  unique_filename = f"{uuid.uuid4()}_product_image_{file.filename}"
+  file_location = UPLOAD_DIR / unique_filename
+  async with aiofiles.open(file_location, 'wb') as f:
+    content = await file.read()
+    await f.write(content)
+
+  return str(file_location)
 
 def generateTokens(length: int = 35) -> str:
   characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"

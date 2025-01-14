@@ -1,5 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
-from datetime import date
+from pydantic import BaseModel, Field
 
 class UserCreate(BaseModel):
   full_name: str = Field(
@@ -18,6 +17,13 @@ class UserCreate(BaseModel):
   password: str = Field(
     ..., min_length=8, description="Password with at least 8 characters"
   )
+
+  class Config:
+    from_attributes = True
+
+class UserCheck(BaseModel):
+  phone_number: str = Field(..., description="A valid phone number")
+  password: str = Field(..., min_length=8, description="Password with at least 8 characters")
 
   class Config:
     from_attributes = True
