@@ -10,13 +10,22 @@ from pathlib import Path
 
 UPLOAD_DIR = Path('./assets/product_images/')
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+UPLOAD_DIR_PROFILE = Path('./assets/image_photos/')
+UPLOAD_DIR_PROFILE.mkdir(parents=True, exist_ok=True)
 
-async def save_image(file: UploadFile) -> str:
-  unique_filename = f"{uuid.uuid4()}_product_image_{file.filename}"
-  file_location = UPLOAD_DIR / unique_filename
-  async with aiofiles.open(file_location, 'wb') as f:
-    content = await file.read()
-    await f.write(content)
+async def save_image(file: UploadFile, number: int) -> str:
+  if number == 1:
+    unique_filename = f"{uuid.uuid4()}_product_image_{file.filename}"
+    file_location = UPLOAD_DIR / unique_filename
+    async with aiofiles.open(file_location, 'wb') as f:
+      content = await file.read()
+      await f.write(content)
+  elif number == 2:
+    unique_filename = f"{uuid.uuid4()}_users_image_{file.filename}"
+    file_location = UPLOAD_DIR_PROFILE / unique_filename
+    async with aiofiles.open(file_location, 'wb') as f:
+      content = await file.read()
+      await f.write(content)
 
   return str(file_location)
 

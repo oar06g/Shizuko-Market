@@ -14,15 +14,18 @@ class Config:
     self.database_url = self._create_database_url()
     self.engine = self._create_engine()
     self.session = self._create_session()
-  
+
   def _create_database_url(self):
     return f"mysql+aiomysql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
+
   
   def _create_engine(self):
     return create_async_engine(self.database_url, echo=True, future=True)
 
+
   def _create_session(self):
     return sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
+
 
 load_dotenv()
 encryption_password = os.getenv("ENCRYPTION_PASSWORD")
@@ -36,4 +39,4 @@ async def get_db():
     try:
       yield db
     finally:
-      db.close()
+      await db.close()
